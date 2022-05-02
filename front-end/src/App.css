@@ -1,0 +1,24 @@
+.elevatorButtonContainer {
+  display: flex;
+  flex-direction: column;
+}
+.elevatorButton {
+  width: 80px;
+  margin: 10px;
+}
+
+.stageContainer {
+  display: flex;
+}
+.stage {
+  margin: 20px;
+}
+section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.elevatorButtonRow {
+  display: flex;
+  justify-content: center;
+}
