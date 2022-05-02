@@ -1,10 +1,13 @@
 import { Icon } from "@iconify/react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ElevatorPanel from "../components/ElevatorPanel";
+import BuildingArray from "../components/BuildingArray";
 export default function Elevator() {
   const [direction, setDirection] = useState(""),
-    [doorClosed, setDoorClosed] = useState(false),
-    [currentStage, setCurrentStage] = useState(0);
+    [doorOpen, setDoorOpen] = useState(true),
+    [currentStage, setCurrentStage] = useState(0),
+    [arrayCall, setArrayCall] = useState(""),
+    [onMove, setOnMove] = useState(false);
 
   const handleDirection = () => {
     if (direction === "up") {
@@ -29,55 +32,61 @@ export default function Elevator() {
       <Icon icon="akar-icons:light-bulb" />
     );
   };
+  const handleClickArrayCallButton = (stage) => {
+    setArrayCall(stage);
+    setOnMove("array");
+  };
+  const handleArrayCallButton = (stage) => {
+    return stage === currentStage ? (
+      <p>A l'étage</p>
+    ) : arrayCall === stage ? (
+      <button>
+        <Icon icon="cil:elevator" color="#f0e613" width="30" height="35" />
+      </button>
+    ) : (
+      <button onClick={() => handleClickArrayCallButton(stage)}>
+        <Icon icon="cil:elevator" width="30" height="35" />
+      </button>
+    );
+  };
+
+  useEffect(() => {
+    if (currentStage === arrayCall) {
+      setOnMove(false);
+    }
+    if (currentStage < arrayCall) {
+      setTimeout(
+        () =>
+          setCurrentStage((prev) => {
+            return prev + 1;
+          }),
+        1000
+      );
+    }
+    if (currentStage > arrayCall) {
+      setTimeout(
+        () =>
+          setCurrentStage((prev) => {
+            return prev - 1;
+          }),
+        1000
+      );
+    }
+  }, [arrayCall, currentStage]);
+  useEffect(() => {
+    if (!onMove) {
+      setDoorOpen(true);
+    } else {
+      setDoorOpen(false);
+    }
+  }, [onMove]);
   return (
     <>
-      <ElevatorPanel
-        handleDirection={handleDirection}
-        doorClosed={doorClosed}
+      <ElevatorPanel handleDirection={handleDirection} doorOpen={doorOpen} />
+      <BuildingArray
+        handleArrayCurrentStage={handleArrayCurrentStage}
+        handleArrayCallButton={handleArrayCallButton}
       />
-
-      <table>
-        <tr>
-          <td className="arrayStage">9</td>
-          <td className="arrayCurrentStage">{handleArrayCurrentStage(9)}</td>
-        </tr>
-        <tr>
-          <td className="arrayStage">8</td>
-          <td className="arrayCurrentStage">{handleArrayCurrentStage(8)}</td>
-        </tr>
-        <tr>
-          <td className="arrayStage">7</td>
-          <td className="arrayCurrentStage">{handleArrayCurrentStage(7)}</td>
-        </tr>
-        <tr>
-          <td className="arrayStage">6</td>
-          <td className="arrayCurrentStage">{handleArrayCurrentStage(6)}</td>
-        </tr>
-        <tr>
-          <td className="arrayStage">5</td>
-          <td className="arrayCurrentStage">{handleArrayCurrentStage(5)}</td>
-        </tr>
-        <tr>
-          <td className="arrayStage">4</td>
-          <td className="arrayCurrentStage">{handleArrayCurrentStage(4)}</td>
-        </tr>
-        <tr>
-          <td className="arrayStage">3</td>
-          <td className="arrayCurrentStage">{handleArrayCurrentStage(3)}</td>
-        </tr>
-        <tr>
-          <td className="arrayStage">2</td>
-          <td className="arrayCurrentStage">{handleArrayCurrentStage(2)}</td>
-        </tr>
-        <tr>
-          <td className="arrayStage">1</td>
-          <td className="arrayCurrentStage">{handleArrayCurrentStage(1)}</td>
-        </tr>
-        <tr>
-          <td className="arrayStage">0</td>
-          <td className="arrayCurrentStage">{handleArrayCurrentStage(0)}</td>
-        </tr>
-      </table>
     </>
   );
 }
