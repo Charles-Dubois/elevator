@@ -5,10 +5,11 @@ import BuildingArray from "../components/BuildingArray";
 export default function Elevator() {
   const [direction, setDirection] = useState(""),
     [doorOpen, setDoorOpen] = useState(true),
-    [currentStage, setCurrentStage] = useState(0),
+    [currentStage, setCurrentStage] = useState(3),
     [stageCall, setStageCall] = useState(""),
     [onMove, setOnMove] = useState(false),
-    [panelButton, setPanelButton] = useState(false);
+    [panelButton, setPanelButton] = useState(false),
+    [waitBetweenStage, setWaitBetweenStage] = useState(1000);
 
   // show the direction on the panel
   const handleDirection = () => {
@@ -75,24 +76,31 @@ export default function Elevator() {
   useEffect(() => {
     if (onMove === "array" || onMove === "panel") {
       if (currentStage === stageCall) {
+        setWaitBetweenStage(5000);
         setPanelButton(false);
         setDirection("at stage");
         setOnMove(false);
       } else if (currentStage < stageCall) {
+        if (waitBetweenStage !== 1000) {
+          setWaitBetweenStage(1000);
+        }
         setTimeout(
           () =>
             setCurrentStage((prev) => {
               return prev + 1;
             }),
-          1000
+          waitBetweenStage
         );
       } else if (currentStage > stageCall) {
+        if (waitBetweenStage !== 1000) {
+          setWaitBetweenStage(1000);
+        }
         setTimeout(
           () =>
             setCurrentStage((prev) => {
               return prev - 1;
             }),
-          1000
+          waitBetweenStage
         );
       }
     }
