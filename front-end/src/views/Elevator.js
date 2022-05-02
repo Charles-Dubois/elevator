@@ -7,8 +7,10 @@ export default function Elevator() {
     [doorOpen, setDoorOpen] = useState(true),
     [currentStage, setCurrentStage] = useState(0),
     [stageCall, setStageCall] = useState(""),
-    [onMove, setOnMove] = useState(false);
+    [onMove, setOnMove] = useState(false),
+    [panelButton, setPanelButton] = useState(false);
 
+  // show the direction on the panel
   const handleDirection = () => {
     if (direction === "up") {
       return <Icon icon="akar-icons:arrow-up" />;
@@ -20,6 +22,7 @@ export default function Elevator() {
       return <p className="stage">{currentStage}</p>;
     }
   };
+  // show light or big light
   const handleArrayCurrentStage = (stage) => {
     return stage === currentStage ? (
       <Icon
@@ -32,7 +35,8 @@ export default function Elevator() {
       <Icon icon="akar-icons:light-bulb" />
     );
   };
-  const handleClickArrayCallButton = async (stage) => {
+  // change de direction of the, the stage where the elevator have to move and the type of move (array/panel)
+  const handleClickArrayCallButton = (stage) => {
     if (currentStage < stage) {
       setDirection("up");
     } else if (currentStage > stage) {
@@ -41,7 +45,18 @@ export default function Elevator() {
     setStageCall(stage);
     setOnMove("array");
   };
+  const handleClickPanelCallButton = (stage) => {
+    if (currentStage < stage) {
+      setDirection("up");
+    } else if (currentStage > stage) {
+      setDirection("down");
+    }
+    setPanelButton(stage);
+    setStageCall(stage);
+    setOnMove("panel");
+  };
 
+  // show button or lighting button
   const handleArrayCallButton = (stage) => {
     return stage === currentStage ? (
       <p>A l'étage</p>
@@ -55,10 +70,12 @@ export default function Elevator() {
       </button>
     );
   };
+
   // move the elevator when the call is made by the array button
   useEffect(() => {
-    if (onMove === "array") {
+    if (onMove === "array" || onMove === "panel") {
       if (currentStage === stageCall) {
+        setPanelButton(false);
         setDirection("at stage");
         setOnMove(false);
       } else if (currentStage < stageCall) {
@@ -97,7 +114,7 @@ export default function Elevator() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          stageCall: onMove,
+          call: onMove,
           from: currentStage,
           to: stageCall,
         }),
@@ -110,7 +127,12 @@ export default function Elevator() {
 
   return (
     <>
-      <ElevatorPanel handleDirection={handleDirection} doorOpen={doorOpen} />
+      <ElevatorPanel
+        handleDirection={handleDirection}
+        doorOpen={doorOpen}
+        handleClickPanelCallButton={handleClickPanelCallButton}
+        panelButton={panelButton}
+      />
       <BuildingArray
         handleArrayCurrentStage={handleArrayCurrentStage}
         handleArrayCallButton={handleArrayCallButton}

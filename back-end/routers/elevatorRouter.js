@@ -6,6 +6,7 @@ const express = require("express"),
 
 router.post("/", async (req, res) => {
   let result;
+
   try {
     result = await Elevator.create(req.body);
   } catch (error) {
