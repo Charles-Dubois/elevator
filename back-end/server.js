@@ -20,12 +20,13 @@ mongoose
 
 // middlewares
 app.use(express.json());
-app.use(cors);
+app.use(cors());
 // @desc Route acceuil API
 // @route 	GET /
 // @access 	Public
 app.get("/", (_req, res) => {
-  res.send("elevator API");
+  console.log("hello world");
+  res.json({ message: "elevator API" });
 });
 // routers path
 app.use("/admin", authRouter);

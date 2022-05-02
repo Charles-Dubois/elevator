@@ -32,7 +32,7 @@ export default function Elevator() {
       <Icon icon="akar-icons:light-bulb" />
     );
   };
-  const handleClickArrayCallButton = (stage) => {
+  const handleClickArrayCallButton = async (stage) => {
     if (currentStage < stage) {
       setDirection("up");
     } else if (currentStage > stage) {
@@ -40,23 +40,22 @@ export default function Elevator() {
     }
     setArrayCall(stage);
     setOnMove("array");
-    fetch("http://localhost:8000/").then((res) => console.log(res));
 
-    // fetch("http://localhost:8000/elevator", {
-    //   method: "POST",
-    //   headers: {
-    //     Accept: "application/json",
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({
-    //     call: onMove,
-    //     from: currentStage,
-    //     to: arrayCall,
-    //   }),
-    // })
-    //   .then((res) => res.json())
-    //   .then((res) => console.log(res))
-    //   .catch((err) => console.log(err));
+    fetch("http://localhost:8000/elevator", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        call: "array",
+        from: currentStage,
+        to: stage,
+      }),
+    })
+      .then((res) => res.json())
+      .then((res) => console.log(res))
+      .catch((err) => console.log(err));
   };
 
   const handleArrayCallButton = (stage) => {
@@ -105,6 +104,7 @@ export default function Elevator() {
       setDoorOpen(false);
     }
   }, [onMove]);
+
   return (
     <>
       <ElevatorPanel handleDirection={handleDirection} doorOpen={doorOpen} />

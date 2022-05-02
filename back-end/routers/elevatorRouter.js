@@ -4,7 +4,18 @@ const express = require("express"),
   //model mongo DB
   Elevator = require("../models/elevatorModel");
 
-router.get("/", (_req, res) => {
+router.post("/", async (req, res) => {
+  let result;
+  try {
+    result = await Elevator.create(req.body);
+  } catch (error) {
+    console.error(error);
+    return res.status(400).json({
+      message: "Error 400 bad request",
+      description: "ElevatorRouter.js POST",
+    });
+  }
+  console.log(result);
   res.send("hello from elevator");
 });
 module.exports = router;

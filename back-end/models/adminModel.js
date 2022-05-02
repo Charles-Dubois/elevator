@@ -5,6 +5,7 @@ const mongoose = require("mongoose"),
       type: String,
       required: true,
       unique: true,
+      maxLenght: 50,
     },
     password: {
       type: String,
