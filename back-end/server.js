@@ -6,9 +6,10 @@ const express = require("express"),
   app = express(),
   { MONGODB_URI } = process.env,
   // port to lisent
-  PORT = process.env.PORT || 8000;
-// router
-authRouter = require("./routers/authRouter");
+  PORT = process.env.PORT || 8000,
+  // router
+  authRouter = require("./routers/authRouter"),
+  elevatorRouter = require("./routers/elevatorRouter");
 
 // connection Mongo DB
 mongoose
@@ -26,6 +27,7 @@ app.get("/", (_req, res) => {
 });
 // routers path
 app.use("/admin", authRouter);
+app.use("/elevator", elevatorRouter);
 
 // @desc Catch not found
 // @route 	GET /
