@@ -16,7 +16,7 @@ export default function Elevator() {
       return <Icon icon="akar-icons:arrow-down" />;
     } else if (currentStage === 0) {
       return <p className="stage">RDC</p>;
-    } else {
+    } else if (direction === "at stage") {
       return <p className="stage">{currentStage}</p>;
     }
   };
@@ -33,9 +33,32 @@ export default function Elevator() {
     );
   };
   const handleClickArrayCallButton = (stage) => {
+    if (currentStage < stage) {
+      setDirection("up");
+    } else if (currentStage > stage) {
+      setDirection("down");
+    }
     setArrayCall(stage);
     setOnMove("array");
+    fetch("http://localhost:8000/").then((res) => console.log(res));
+
+    // fetch("http://localhost:8000/elevator", {
+    //   method: "POST",
+    //   headers: {
+    //     Accept: "application/json",
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({
+    //     call: onMove,
+    //     from: currentStage,
+    //     to: arrayCall,
+    //   }),
+    // })
+    //   .then((res) => res.json())
+    //   .then((res) => console.log(res))
+    //   .catch((err) => console.log(err));
   };
+
   const handleArrayCallButton = (stage) => {
     return stage === currentStage ? (
       <p>A l'étage</p>
@@ -49,30 +72,32 @@ export default function Elevator() {
       </button>
     );
   };
-
+  // move the elevator when the call is made by the array button
   useEffect(() => {
-    if (currentStage === arrayCall) {
-      setOnMove(false);
-    }
-    if (currentStage < arrayCall) {
-      setTimeout(
-        () =>
-          setCurrentStage((prev) => {
-            return prev + 1;
-          }),
-        1000
-      );
-    }
-    if (currentStage > arrayCall) {
-      setTimeout(
-        () =>
-          setCurrentStage((prev) => {
-            return prev - 1;
-          }),
-        1000
-      );
+    if (onMove === "array") {
+      if (currentStage === arrayCall) {
+        setDirection("at stage");
+        setOnMove(false);
+      } else if (currentStage < arrayCall) {
+        setTimeout(
+          () =>
+            setCurrentStage((prev) => {
+              return prev + 1;
+            }),
+          1000
+        );
+      } else if (currentStage > arrayCall) {
+        setTimeout(
+          () =>
+            setCurrentStage((prev) => {
+              return prev - 1;
+            }),
+          1000
+        );
+      }
     }
   }, [arrayCall, currentStage]);
+  // Open and close the doors
   useEffect(() => {
     if (!onMove) {
       setDoorOpen(true);

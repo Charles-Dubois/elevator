@@ -3,13 +3,14 @@ require("dotenv").config();
 //dependencies
 const express = require("express"),
   mongoose = require("mongoose"),
-  app = express(),
-  { MONGODB_URI } = process.env,
+  cors = require("cors");
+(app = express()),
+  ({ MONGODB_URI } = process.env),
   // port to lisent
-  PORT = process.env.PORT || 8000,
+  (PORT = process.env.PORT || 8000),
   // router
-  authRouter = require("./routers/authRouter"),
-  elevatorRouter = require("./routers/elevatorRouter");
+  (authRouter = require("./routers/authRouter")),
+  (elevatorRouter = require("./routers/elevatorRouter"));
 
 // connection Mongo DB
 mongoose
@@ -19,6 +20,7 @@ mongoose
 
 // middlewares
 app.use(express.json());
+app.use(cors);
 // @desc Route acceuil API
 // @route 	GET /
 // @access 	Public
