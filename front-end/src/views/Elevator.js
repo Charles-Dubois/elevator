@@ -6,7 +6,7 @@ export default function Elevator() {
   const [direction, setDirection] = useState(""),
     [doorOpen, setDoorOpen] = useState(true),
     [currentStage, setCurrentStage] = useState(0),
-    [arrayCall, setArrayCall] = useState(""),
+    [stageCall, setStageCall] = useState(""),
     [onMove, setOnMove] = useState(false);
 
   const handleDirection = () => {
@@ -38,30 +38,14 @@ export default function Elevator() {
     } else if (currentStage > stage) {
       setDirection("down");
     }
-    setArrayCall(stage);
+    setStageCall(stage);
     setOnMove("array");
-
-    fetch("http://localhost:8000/elevator", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        call: "array",
-        from: currentStage,
-        to: stage,
-      }),
-    })
-      .then((res) => res.json())
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
   };
 
   const handleArrayCallButton = (stage) => {
     return stage === currentStage ? (
       <p>A l'étage</p>
-    ) : arrayCall === stage ? (
+    ) : stageCall === stage ? (
       <button>
         <Icon icon="cil:elevator" color="#f0e613" width="30" height="35" />
       </button>
@@ -74,10 +58,10 @@ export default function Elevator() {
   // move the elevator when the call is made by the array button
   useEffect(() => {
     if (onMove === "array") {
-      if (currentStage === arrayCall) {
+      if (currentStage === stageCall) {
         setDirection("at stage");
         setOnMove(false);
-      } else if (currentStage < arrayCall) {
+      } else if (currentStage < stageCall) {
         setTimeout(
           () =>
             setCurrentStage((prev) => {
@@ -85,7 +69,7 @@ export default function Elevator() {
             }),
           1000
         );
-      } else if (currentStage > arrayCall) {
+      } else if (currentStage > stageCall) {
         setTimeout(
           () =>
             setCurrentStage((prev) => {
@@ -95,13 +79,32 @@ export default function Elevator() {
         );
       }
     }
-  }, [arrayCall, currentStage]);
+  }, [stageCall, currentStage]);
   // Open and close the doors
   useEffect(() => {
     if (!onMove) {
       setDoorOpen(true);
     } else {
       setDoorOpen(false);
+    }
+
+    if (onMove) {
+      // send the move of the elevator to the DB
+      fetch("http://localhost:8000/elevator", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          stageCall: onMove,
+          from: currentStage,
+          to: stageCall,
+        }),
+      })
+        .then((res) => res.json())
+        .then((res) => console.log(res))
+        .catch((err) => console.log(err));
     }
   }, [onMove]);
 

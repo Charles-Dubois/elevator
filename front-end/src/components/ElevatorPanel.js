@@ -9,19 +9,19 @@ export default function ElevatorPanel(props) {
       </div>
       <div className="elevatorButtonContainer">
         <div className="elevatorButtonRow">
-          <button className="elevatorButton">9</button>
+          <button className={"elevatorButton"}>7</button>
           <button className="elevatorButton">8</button>
-          <button className="elevatorButton">7</button>
+          <button className="elevatorButton">9</button>
         </div>
         <div className="elevatorButtonRow">
-          <button className="elevatorButton">6</button>
-          <button className="elevatorButton">5</button>
           <button className="elevatorButton">4</button>
+          <button className="elevatorButton">5</button>
+          <button className="elevatorButton">6</button>
         </div>
         <div className="elevatorButtonRow">
-          <button className="elevatorButton">3</button>
-          <button className="elevatorButton">2</button>
           <button className="elevatorButton">1</button>
+          <button className="elevatorButton">2</button>
+          <button className="elevatorButton">3</button>
         </div>
         <div className="elevatorButtonRow">
           <button className="elevatorButton">0</button>
