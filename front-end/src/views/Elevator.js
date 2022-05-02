@@ -76,8 +76,6 @@ export default function Elevator() {
 
   // move the elevator when the call is made by the array button
   useEffect(() => {
-    console.log(listOfCall[callRound]);
-
     if (onMove === "array" || onMove === "panel") {
       if (currentStage === listOfCall[callRound]) {
         setDoorOpen(true);
@@ -144,7 +142,7 @@ export default function Elevator() {
         handleDirection={handleDirection}
         doorOpen={doorOpen}
         handleClickPanelCallButton={handleClickPanelCallButton}
-        panelButton={panelButton}
+        panelButton={[panelButton]}
       />
       <BuildingArray
         handleArrayCurrentStage={handleArrayCurrentStage}
