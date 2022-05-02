@@ -9,7 +9,9 @@ export default function Elevator() {
     [stageCall, setStageCall] = useState(""),
     [onMove, setOnMove] = useState(false),
     [panelButton, setPanelButton] = useState(false),
-    [waitBetweenStage, setWaitBetweenStage] = useState(1000);
+    [waitBetweenStage, setWaitBetweenStage] = useState(1000),
+    [listOfCall, setListOfCall] = useState([]),
+    [callRound, setCallRound] = useState(0);
 
   // show the direction on the panel
   const handleDirection = () => {
@@ -45,6 +47,10 @@ export default function Elevator() {
     }
     setStageCall(stage);
     setOnMove("array");
+
+    setListOfCall((prev) => {
+      return [...prev, stage];
+    });
   };
   const handleClickPanelCallButton = (stage) => {
     if (currentStage < stage) {
@@ -53,8 +59,14 @@ export default function Elevator() {
       setDirection("down");
     }
     setPanelButton(stage);
-    setStageCall(stage);
+    if (stageCall === "") {
+      setStageCall(stage);
+    }
     setOnMove("panel");
+
+    setListOfCall((prev) => {
+      return [...prev, stage];
+    });
   };
 
   // show button or lighting button
@@ -80,7 +92,12 @@ export default function Elevator() {
         setPanelButton(false);
         setDirection("at stage");
         setOnMove(false);
-      } else if (currentStage < stageCall) {
+        setCallRound((prev) => {
+          return prev + 1;
+        });
+      }
+
+      if (currentStage < listOfCall[callRound]) {
         if (waitBetweenStage !== 1000) {
           setWaitBetweenStage(1000);
         }
@@ -91,7 +108,7 @@ export default function Elevator() {
             }),
           waitBetweenStage
         );
-      } else if (currentStage > stageCall) {
+      } else if (currentStage > listOfCall[callRound]) {
         if (waitBetweenStage !== 1000) {
           setWaitBetweenStage(1000);
         }
@@ -104,7 +121,7 @@ export default function Elevator() {
         );
       }
     }
-  }, [stageCall, currentStage]);
+  }, [listOfCall[callRound], currentStage, callRound]);
   // Open and close the doors
   useEffect(() => {
     if (!onMove) {
@@ -135,6 +152,8 @@ export default function Elevator() {
 
   return (
     <>
+      {console.log(listOfCall)}
+      {console.log(stageCall)}
       <ElevatorPanel
         handleDirection={handleDirection}
         doorOpen={doorOpen}
