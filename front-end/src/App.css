@@ -22,3 +22,9 @@ section {
   display: flex;
   justify-content: center;
 }
+.test {
+  font-size: 40px;
+}
+.elevatorPanel {
+  background-color: aquamarine;
+}
