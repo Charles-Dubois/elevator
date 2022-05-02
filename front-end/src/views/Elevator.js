@@ -40,11 +40,6 @@ export default function Elevator() {
   };
   // change de direction of the, the stage where the elevator have to move and the type of move (array/panel)
   const handleClickArrayCallButton = (stage) => {
-    if (currentStage < stage) {
-      setDirection("up");
-    } else if (currentStage > stage) {
-      setDirection("down");
-    }
     setStageCall(stage);
     setOnMove("array");
 
@@ -53,11 +48,6 @@ export default function Elevator() {
     });
   };
   const handleClickPanelCallButton = (stage) => {
-    if (currentStage < stage) {
-      setDirection("up");
-    } else if (currentStage > stage) {
-      setDirection("down");
-    }
     setPanelButton(stage);
     if (stageCall === "") {
       setStageCall(stage);
@@ -86,12 +76,15 @@ export default function Elevator() {
 
   // move the elevator when the call is made by the array button
   useEffect(() => {
+    console.log(listOfCall[callRound]);
+
     if (onMove === "array" || onMove === "panel") {
-      if (currentStage === stageCall) {
+      if (currentStage === listOfCall[callRound]) {
+        setDoorOpen(true);
         setWaitBetweenStage(5000);
         setPanelButton(false);
         setDirection("at stage");
-        setOnMove(false);
+        setStageCall(listOfCall[callRound]);
         setCallRound((prev) => {
           return prev + 1;
         });
@@ -101,35 +94,31 @@ export default function Elevator() {
         if (waitBetweenStage !== 1000) {
           setWaitBetweenStage(1000);
         }
-        setTimeout(
-          () =>
-            setCurrentStage((prev) => {
-              return prev + 1;
-            }),
-          waitBetweenStage
-        );
+
+        setTimeout(() => {
+          setCurrentStage((prev) => {
+            setDoorOpen(false);
+            setDirection("up");
+            return prev + 1;
+          });
+        }, waitBetweenStage);
       } else if (currentStage > listOfCall[callRound]) {
         if (waitBetweenStage !== 1000) {
           setWaitBetweenStage(1000);
         }
-        setTimeout(
-          () =>
-            setCurrentStage((prev) => {
-              return prev - 1;
-            }),
-          waitBetweenStage
-        );
+
+        setTimeout(() => {
+          setCurrentStage((prev) => {
+            setDoorOpen(false);
+            setDirection("down");
+            return prev - 1;
+          });
+        }, waitBetweenStage);
       }
     }
-  }, [listOfCall[callRound], currentStage, callRound]);
-  // Open and close the doors
-  useEffect(() => {
-    if (!onMove) {
-      setDoorOpen(true);
-    } else {
-      setDoorOpen(false);
-    }
+  }, [currentStage, listOfCall[callRound], onMove]);
 
+  useEffect(() => {
     if (onMove) {
       // send the move of the elevator to the DB
       fetch("http://localhost:8000/elevator", {
@@ -145,15 +134,12 @@ export default function Elevator() {
         }),
       })
         .then((res) => res.json())
-        .then((res) => console.log(res))
         .catch((err) => console.log(err));
     }
   }, [onMove]);
 
   return (
     <>
-      {console.log(listOfCall)}
-      {console.log(stageCall)}
       <ElevatorPanel
         handleDirection={handleDirection}
         doorOpen={doorOpen}
