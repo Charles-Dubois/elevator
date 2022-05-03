@@ -38,7 +38,7 @@ router.post("/register", validAuth, async (req, res) => {
   );
 
   //add token in cookie
-  res.cookie("elevator-api", token, { httpOnly: true, secure: false });
+  res.cookie("elevatorapi", token, { httpOnly: true, secure: false });
 
   res
     .status(201)
@@ -51,6 +51,7 @@ router.post("/register", validAuth, async (req, res) => {
 
 router.post("/login", validAuth, async (req, res) => {
   let result, ckeckPassword;
+
   try {
     // find the email in the db
     result = await Admin.find({ email: req.body.email });
@@ -79,9 +80,8 @@ router.post("/login", validAuth, async (req, res) => {
     },
     SECRET
   );
-
   //add token in cookie
-  res.cookie("elevator-api", token, { httpOnly: true, secure: false });
+  res.cookie("elevatorapi", token, { httpOnly: true, secure: false });
 
   res.json({ message: "Request success", description: "Connected" });
 });
@@ -91,7 +91,7 @@ router.post("/login", validAuth, async (req, res) => {
 // @access 	Private
 router.delete("/logout", async (_req, res) => {
   try {
-    res.clearCookie("elevator-api");
+    res.clearCookie("elevatorapi");
   } catch (error) {
     console.log(error);
     res.status(400).json({
